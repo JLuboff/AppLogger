@@ -20,3 +20,26 @@ export const error = async (
     throw error;
   }
 };
+
+export const level = async (
+  db: ConnectionPool,
+  level: string
+): Promise<number> => {
+  try {
+    const result = await db
+      .request()
+      .input('level', sql.NVarChar(20), level)
+      .output('levelID', sql.Int).query(`
+      IF ((SELECT COUNT(LevelID) FROM dbo.Level WHERE Level = @level) > 0)
+          SELECT LevelID as levelID FROM dbo.Level WHERE Level = @level
+      ELSE 
+          INSERT INTO dbo.Level (Level) 
+          OUTPUT INSERTED.levelID
+          VALUES (@level)
+      `);
+
+    return result.recordsets[0][0].levelID;
+  } catch (error) {
+    throw error;
+  }
+};
