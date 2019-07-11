@@ -1,5 +1,5 @@
 import { ConnectionPool } from 'mssql';
-import { ErrorReport } from "../types/interfaces";
+import { ErrorReport } from '../types/interfaces';
 
 export const errors = async (
   db: ConnectionPool
@@ -21,6 +21,19 @@ export const errors = async (
                 ON Log.MethodID = m.MethodID
                 LEFT JOIN dbo.Route AS r
                 ON Log.RouteID = r.RouteID`);
+
+    return result.recordsets[0];
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const levels = async (db: ConnectionPool): Promise<Array<any>> => {
+  try {
+    const result = await db.request().query(`
+      SELECT LevelID, Level
+        FROM dbo.Level;
+      `);
 
     return result.recordsets[0];
   } catch (error) {
