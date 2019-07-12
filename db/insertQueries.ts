@@ -1,4 +1,4 @@
-import sql, { ConnectionPool } from 'mssql';
+import sql, { ConnectionPool, NVarChar, Int } from 'mssql';
 import { WriteErrorProps } from '../types/interfaces';
 
 export const error = async (
@@ -8,12 +8,12 @@ export const error = async (
   try {
     await db
       .request()
-      .input('applicationID', sql.Int, props.applicationID)
-      .input('levelID', sql.Int, props.levelID)
-      .input('userID', sql.Int, props.userID)
-      .input('errorID', sql.Int, props.errorID)
-      .input('methodID', sql.Int, props.methodID)
-      .input('routeID', sql.Int, props.routeID).query(`
+      .input('applicationID', Int, props.applicationID)
+      .input('levelID', Int, props.levelID)
+      .input('userID', Int, props.userID)
+      .input('errorID', Int, props.errorID)
+      .input('methodID', Int, props.methodID)
+      .input('routeID', Int, props.routeID).query(`
     INSERT INTO dbo.Log (ApplicationID, LevelID, UserID, ErrorID, MethodID, RouteID)
     VALUES (@applicationID, @levelID, @userID, @errorID, @methodID, @routeID);`);
   } catch (error) {
@@ -28,8 +28,8 @@ export const level = async (
   try {
     const result = await db
       .request()
-      .input('level', sql.NVarChar(20), level)
-      .output('levelID', sql.Int).query(`
+      .input('level', NVarChar(20), level)
+      .output('levelID', Int).query(`
       IF ((SELECT COUNT(LevelID) FROM dbo.Level WHERE Level = @level) > 0)
           SELECT LevelID as levelID FROM dbo.Level WHERE Level = @level
       ELSE 
