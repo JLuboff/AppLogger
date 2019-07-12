@@ -38,7 +38,17 @@ export default class AppLogger {
   };
 
   public addApplication = () => {};
-  public retrieveApplicationID = () => {};
+  public retrieveApplicationID = async (appName: string) => {
+    try {
+      const db = await this.connectToDatabase();
+      const applicationID = await read.applicationID(db, appName);
+
+      db.close();
+      return applicationID;
+    } catch (error) {
+      throw error;
+    }
+  };
 
   public addLevel = async (level: string): Promise<number> => {
     try {
