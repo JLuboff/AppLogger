@@ -1,13 +1,11 @@
-import sql from 'mssql';
-import { ConnectSQLProps } from '../types/interfaces';
+import { config, ConnectionPool } from 'mssql';
 
 export const initializeDBConnection = async (
-  sqlConfig: ConnectSQLProps
-): Promise<sql.ConnectionPool> => {
+  sqlConfig: config
+): Promise<ConnectionPool> => {
   try {
-    const pool = new sql.ConnectionPool(sqlConfig);
-    const poolConnected = pool.connect();
-    await poolConnected;
+    const pool = new ConnectionPool(sqlConfig);
+    await pool.connect();
     return pool;
   } catch (err) {
     err.function = err.function
