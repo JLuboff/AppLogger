@@ -38,6 +38,11 @@ export default class AppLogger {
   };
 
   public addApplication = () => {};
+  // ////////////////////////////////////////
+  // Used to get applicationID, if app name
+  // exists reads ID else inserts and returns
+  // the now new app id
+  // ///////////////////////////////////////
   public retrieveApplicationID = async (appName: string) => {
     try {
       const db = await this.connectToDatabase();
@@ -49,26 +54,32 @@ export default class AppLogger {
       throw error;
     }
   };
-
-  public addLevel = async (level: string): Promise<number> => {
+  // ////////////////////////////////////////
+  // Creates a new log level if it doesn't
+  // already exist
+  // ///////////////////////////////////////
+  public addLogLevel = async (logLevel: string): Promise<number> => {
     try {
       const db = await this.connectToDatabase();
-      const newLevelID = await insert.level(db, level);
+      const newLogLevelID = await insert.logLevel(db, logLevel);
 
       db.close();
-      return newLevelID;
+      return newLogLevelID;
     } catch (error) {
       throw error;
     }
   };
-
-  public retrieveLevel = async () => {
+  // ////////////////////////////////////////
+  // Retrieves list of Log levels and their
+  // ID's
+  // ///////////////////////////////////////
+  public retrieveLogLevel = async () => {
     try {
       const db = await this.connectToDatabase();
-      const levels = await read.levels(db);
+      const logLevels = await read.logLevels(db);
 
       db.close();
-      return levels;
+      return logLevels;
     } catch (error) {
       throw error;
     }
@@ -91,7 +102,7 @@ export default class AppLogger {
       const db = await this.connectToDatabase();
       await insert.error(db, {
         applicationID: props.applicationID,
-        levelID: props.levelID,
+        logLevelID: props.logLevelID,
         userID: props.userID,
         errorID: props.errorID,
         methodID: props.methodID,

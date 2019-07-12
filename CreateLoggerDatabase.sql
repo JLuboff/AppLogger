@@ -8,9 +8,9 @@ CREATE TABLE dbo.Application(
 	Application NVARCHAR(50) UNIQUE NOT NULL
 );
 
-CREATE TABLE dbo.Level (
-	LevelID INT IDENTITY PRIMARY KEY NOT NULL,
-	Level NVARCHAR(20) UNIQUE NOT NULL
+CREATE TABLE dbo.LogLevel (
+	LogLevelID INT IDENTITY PRIMARY KEY NOT NULL,
+	LogLevel NVARCHAR(20) UNIQUE NOT NULL
 );
 
 CREATE TABLE dbo.[User] (
@@ -38,10 +38,17 @@ CREATE TABLE dbo.Method (
 CREATE TABLE dbo.Log (
 	LogID INT IDENTITY PRIMARY KEY NOT NULL,
 	ApplicationID INT REFERENCES dbo.Application(ApplicationID) NOT NULL,
-	LevelID INT REFERENCES dbo.Level(LevelID) NOT NULL,
+	LogLevelID INT REFERENCES dbo.LogLevel(LogLevelID) NOT NULL,
 	UserID INT REFERENCES dbo.[User](UserID) NULL,
 	ErrorID INT REFERENCES dbo.Error(ErrorID) NULL,
 	MethodID INT REFERENCES dbo.Method(MethodID) NULL,
 	RouteID INT REFERENCES dbo.Route(RouteID) NULL,
 	TimeOccured DATETIME2 DEFAULT(CURRENT_TIMESTAMP) NOT NULL
 )
+
+INSERT INTO dbo.LogLevel
+	(LogLevel)
+VALUES
+	(N'Info'),
+	(N'Warning'),
+	(N'Error');

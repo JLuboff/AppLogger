@@ -1,6 +1,6 @@
 export interface WriteErrorProps {
   applicationID: number;
-  levelID: number;
+  logLevelID: number;
   userID: number | undefined;
   errorID: number | undefined;
   methodID: number | undefined;
@@ -8,13 +8,15 @@ export interface WriteErrorProps {
 }
 
 export interface ErrorReport {
-  LogID: number;
-  Application: string;
-  User: string | null;
-  ErrorMessage: string | null;
-  ErrorType: string | null;
-  Method: string | null;
-  Route: string | null;
+  logID: number;
+  application: string;
+  logLevel: string;
+  user: string | null;
+  errorMessage: string | null;
+  errorType: string | null;
+  method: string | null;
+  route: string | null;
+  routeMethod: string | null;
 }
 
 export interface ConnectSQLProps {
