@@ -2,7 +2,7 @@
   "name": "applogger",
   "version": "1.0.0",
   "description": "Centralized logger for multiple apps",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "test": "npm test --watch"
   },
