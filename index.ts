@@ -36,20 +36,85 @@ export default class AppLogger {
       throw error;
     }
   };
+  // ////////////////////////////////////////
+  // Used to get errorID, if error
+  // exists reads ID else inserts and returns
+  // the now new error id
+  // ///////////////////////////////////////
+  public retrieveErrorID = async (
+    message: string,
+    type: string | undefined
+  ): Promise<number> => {
+    try {
+      const db = await this.connectToDatabase();
+      const errorID = await read.errorID(db, message, type);
 
-  public addApplication = () => {};
+      db.close();
+      return errorID;
+    } catch (error) {
+      throw error;
+    }
+  };
   // ////////////////////////////////////////
   // Used to get applicationID, if app name
   // exists reads ID else inserts and returns
   // the now new app id
   // ///////////////////////////////////////
-  public retrieveApplicationID = async (appName: string) => {
+  public retrieveApplicationID = async (appName: string): Promise<number> => {
     try {
       const db = await this.connectToDatabase();
       const applicationID = await read.applicationID(db, appName);
 
       db.close();
       return applicationID;
+    } catch (error) {
+      throw error;
+    }
+  };
+  // ////////////////////////////////////////
+  // Used to get routeID, if route name
+  // exists reads ID else inserts and returns
+  // the now new route id
+  // ///////////////////////////////////////
+  public retrieveRouteID = async (route: string, routeMethod: string): Promise<number> => {
+    try {
+      const db = await this.connectToDatabase();
+      const routeID = await read.routeID(db, route, routeMethod);
+
+      db.close();
+      return routeID;
+    } catch (error) {
+      throw error;
+    }
+  };
+  // ////////////////////////////////////////
+  // Used to get routeID, if app name
+  // exists reads ID else inserts and returns
+  // the now new function id
+  // ///////////////////////////////////////
+  public retrieveFunctionID = async (functionName: string | Array<string>): Promise<number> => {
+    try {
+      const db = await this.connectToDatabase();
+      const functionID = await read.functionID(db, functionName);
+
+      db.close();
+      return functionID;
+    } catch (error) {
+      throw error;
+    }
+  };
+  // ////////////////////////////////////////
+  // Used to get userID, if user
+  // exists reads ID else inserts and returns
+  // the now new user id
+  // ///////////////////////////////////////
+  public retrieveUserID = async (user: string): Promise<number> => {
+    try {
+      const db = await this.connectToDatabase();
+      const userID = await read.userID(db, user);
+
+      db.close();
+      return userID;
     } catch (error) {
       throw error;
     }
