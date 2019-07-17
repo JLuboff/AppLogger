@@ -20,7 +20,9 @@ export default class AppLogger {
     this.server = props.server;
     this.database = props.database || 'AppLogger';
   }
-
+  // ////////////////////////////////////////
+  // Initializes database connection
+  // ///////////////////////////////////////
   private connectToDatabase = async (): Promise<ConnectionPool> => {
     try {
       const sqlConfig = {
@@ -37,6 +39,20 @@ export default class AppLogger {
     }
   };
   // ////////////////////////////////////////
+  // Opens connection to database, runs query,
+  // closes database connection and sends results
+  // ///////////////////////////////////////
+  private runQuery = async (cb: any, args: Array<any> | null): Promise<any> => {
+    try {
+      const db = await this.connectToDatabase();
+      const result = args === null ? await cb(db) : await cb(db, ...args);
+      db.close();
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  };
+  // ////////////////////////////////////////
   // Used to get errorID, if error
   // exists reads ID else inserts and returns
   // the now new error id
@@ -46,11 +62,7 @@ export default class AppLogger {
     type: string | undefined
   ): Promise<number> => {
     try {
-      const db = await this.connectToDatabase();
-      const errorID = await read.errorID(db, message, type);
-
-      db.close();
-      return errorID;
+      return await this.runQuery(read.errorID, [message, type]);
     } catch (error) {
       throw error;
     }
@@ -62,11 +74,7 @@ export default class AppLogger {
   // ///////////////////////////////////////
   public retrieveApplicationID = async (appName: string): Promise<number> => {
     try {
-      const db = await this.connectToDatabase();
-      const applicationID = await read.applicationID(db, appName);
-
-      db.close();
-      return applicationID;
+      return await this.runQuery(read.applicationID, [appName]);
     } catch (error) {
       throw error;
     }
@@ -76,13 +84,12 @@ export default class AppLogger {
   // exists reads ID else inserts and returns
   // the now new route id
   // ///////////////////////////////////////
-  public retrieveRouteID = async (route: string, routeMethod: string): Promise<number> => {
+  public retrieveRouteID = async (
+    route: string,
+    routeMethod: string
+  ): Promise<number> => {
     try {
-      const db = await this.connectToDatabase();
-      const routeID = await read.routeID(db, route, routeMethod);
-
-      db.close();
-      return routeID;
+      return await this.runQuery(read.routeID, [route, routeMethod]);
     } catch (error) {
       throw error;
     }
@@ -92,13 +99,11 @@ export default class AppLogger {
   // exists reads ID else inserts and returns
   // the now new function id
   // ///////////////////////////////////////
-  public retrieveFunctionID = async (functionName: string | Array<string>): Promise<number> => {
+  public retrieveFunctionID = async (
+    functionName: string | Array<string>
+  ): Promise<number> => {
     try {
-      const db = await this.connectToDatabase();
-      const functionID = await read.functionID(db, functionName);
-
-      db.close();
-      return functionID;
+      return await this.runQuery(read.functionID, [functionName]);
     } catch (error) {
       throw error;
     }
@@ -110,11 +115,7 @@ export default class AppLogger {
   // ///////////////////////////////////////
   public retrieveUserID = async (user: string): Promise<number> => {
     try {
-      const db = await this.connectToDatabase();
-      const userID = await read.userID(db, user);
-
-      db.close();
-      return userID;
+      return await this.runQuery(read.userID, [user]);
     } catch (error) {
       throw error;
     }
@@ -125,11 +126,7 @@ export default class AppLogger {
   // ///////////////////////////////////////
   public addLogLevel = async (logLevel: string): Promise<number> => {
     try {
-      const db = await this.connectToDatabase();
-      const newLogLevelID = await insert.logLevel(db, logLevel);
-
-      db.close();
-      return newLogLevelID;
+      return await this.runQuery(insert.logLevel, [logLevel]);
     } catch (error) {
       throw error;
     }
@@ -140,11 +137,7 @@ export default class AppLogger {
   // ///////////////////////////////////////
   public retrieveLogLevel = async () => {
     try {
-      const db = await this.connectToDatabase();
-      const logLevels = await read.logLevels(db);
-
-      db.close();
-      return logLevels;
+      return await this.runQuery(read.logLevels, null);
     } catch (error) {
       throw error;
     }
@@ -152,11 +145,7 @@ export default class AppLogger {
 
   public retrieveErrorLog = async (): Promise<Array<ErrorReport>> => {
     try {
-      const db = await this.connectToDatabase();
-      const errorLog = await read.errors(db);
-
-      db.close();
-      return errorLog;
+      return await this.runQuery(read.errors, null);
     } catch (error) {
       throw error;
     }
@@ -164,16 +153,16 @@ export default class AppLogger {
 
   public writeError = async (props: WriteErrorProps): Promise<void> => {
     try {
-      const db = await this.connectToDatabase();
-      await insert.error(db, {
-        applicationID: props.applicationID,
-        logLevelID: props.logLevelID,
-        userID: props.userID,
-        errorID: props.errorID,
-        methodID: props.methodID,
-        routeID: props.routeID
-      });
-      db.close();
+      await this.runQuery(insert.error, [
+        {
+          applicationID: props.applicationID,
+          logLevelID: props.logLevelID,
+          userID: props.userID,
+          errorID: props.errorID,
+          methodID: props.methodID,
+          routeID: props.routeID
+        }
+      ]);
     } catch (error) {
       throw error;
     }
