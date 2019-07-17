@@ -142,7 +142,9 @@ export default class AppLogger {
       throw error;
     }
   };
-
+  // ////////////////////////////////////////
+  // Retrieves list of all logs
+  // ///////////////////////////////////////
   public retrieveErrorLog = async (): Promise<Array<ErrorReport>> => {
     try {
       return await this.runQuery(read.errors, null);
@@ -150,7 +152,9 @@ export default class AppLogger {
       throw error;
     }
   };
-
+  // ////////////////////////////////////////
+  // Writes a log entry to the database
+  // ///////////////////////////////////////
   public writeError = async (props: WriteErrorProps): Promise<void> => {
     try {
       await this.runQuery(insert.error, [
