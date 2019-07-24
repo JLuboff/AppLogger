@@ -60,22 +60,23 @@ export const errors = async (
 ): Promise<Array<ErrorReport>> => {
   try {
     const result = await db.request().query(`
-            SELECT LogID AS logID, a.Application AS application, l.LogLevel AS logLevel,
-             u.[User] AS 'user', e.ErrorMessage AS errorMessage, e.ErrorType AS errorType, 
-             m.Method AS method, r.Route AS route, r.Method AS routeMethod
-            FROM dbo.Log
-                INNER JOIN dbo.Application AS a
-                ON Log.ApplicationID = a.ApplicationID
-                INNER JOIN dbo.LogLevel AS l
-                ON Log.LogLevelID = l.LogLevelID
-                LEFT JOIN dbo.[User] AS u
-                ON Log.UserID = u.UserID
-                LEFT JOIN dbo.Error AS e
-                ON Log.ErrorID = e.ErrorID
-                LEFT JOIN dbo.Method AS m
-                ON Log.MethodID = m.MethodID
-                LEFT JOIN dbo.Route AS r
-                ON Log.RouteID = r.RouteID`);
+            SELECT l.LogID AS logID, a.Application AS application, ll.LogLevel AS logLevel,
+             e.ErrorMessage AS errorMessage, e.ErrorType AS errorType, u.[User] AS 'user', 
+             m.Method AS 'function', r.Route AS route, r.Method AS routeMethod, 
+             l.TimeOccured As logTime
+            FROM dbo.Log l 
+              INNER JOIN dbo.Application AS a 
+                ON l.ApplicationID = a.ApplicationID
+              INNER JOIN dbo.LogLevel AS ll 
+                ON l.LogLevelID = ll.LogLevelID
+              LEFT JOIN dbo.Error AS e 
+                ON l.ErrorID = e.ErrorID
+              LEFT JOIN dbo.[User] AS u
+                ON l.UserID = u.UserID
+              LEFT JOIN dbo.Method AS m
+                ON l.MethodID = m.MethodID
+              LEFT JOIN dbo.Route AS r 
+                ON l.RouteID = r.RouteID`);
 
     return result.recordsets[0];
   } catch (error) {
