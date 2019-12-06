@@ -1,10 +1,5 @@
 import { ConnectionPool } from 'mssql';
 import { initializeDBConnection } from './controllers/connectSQL';
-import {
-  WriteErrorProps,
-  ConnectSQLProps,
-  ErrorReport,
-} from './types/interfaces';
 import * as insert from './db/insertQueries';
 import * as read from './db/readQueries';
 
@@ -137,7 +132,7 @@ export default class AppLogger {
   // ///////////////////////////////////////
   public addLogLevel = async (logLevel: string): Promise<number> => {
     try {
-      return await this.runQuery(insert.logLevel, [logLevel]);
+      return await this.runQuery(insert.newLogLevel, [logLevel]);
     } catch (error) {
       throw error;
     }
@@ -171,7 +166,7 @@ export default class AppLogger {
   // ///////////////////////////////////////
   public writeError = async (props: WriteErrorProps): Promise<void> => {
     try {
-      await this.runQuery(insert.error, [
+      await this.runQuery(insert.newError, [
         {
           applicationID: props.applicationID,
           logLevelID: props.logLevelID,

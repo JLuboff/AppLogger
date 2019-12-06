@@ -1,9 +1,8 @@
 import { ConnectionPool, NVarChar, MAX } from 'mssql';
-import { ErrorReport } from '../types/interfaces';
 
 export const applicationID = async (
   db: ConnectionPool,
-  appName: string
+  appName: string,
 ): Promise<number> => {
   try {
     const result = await db.request().input('appName', NVarChar(50), appName)
@@ -27,7 +26,7 @@ export const applicationID = async (
 export const errorID = async (
   db: ConnectionPool,
   message: string,
-  type: string | undefined
+  type: string | undefined,
 ): Promise<number> => {
   try {
     const result = await db
@@ -37,13 +36,13 @@ export const errorID = async (
             IF ((SELECT COUNT(ErrorID) 
               FROM dbo.Error 
               WHERE ErrorMessage = @message AND ErrorType ${
-                type === undefined ? 'IS NULL' : '= @type'
-              }) >= 1)
+  type === undefined ? 'IS NULL' : '= @type'
+}) >= 1)
                 SELECT ErrorID
                 FROM dbo.Error 
                 WHERE ErrorMessage = @message AND ErrorType ${
-                  type === undefined ? 'IS NULL' : '= @type'
-                }
+  type === undefined ? 'IS NULL' : '= @type'
+}
             ELSE 
               INSERT INTO dbo.Error(ErrorMessage, ErrorType)
                 OUTPUT INSERTED.ErrorID
@@ -51,12 +50,12 @@ export const errorID = async (
 
     return result.recordsets[0][0].ErrorID;
   } catch (error) {
-    throw `errorID ${error}`;
+    throw new Error(`errorID ${error}`);
   }
 };
 
 export const errors = async (
-  db: ConnectionPool
+  db: ConnectionPool,
 ): Promise<Array<ErrorReport>> => {
   try {
     const result = await db.request().query(`
@@ -86,7 +85,7 @@ export const errors = async (
 
 export const functionID = async (
   db: ConnectionPool,
-  method: string | Array<string>
+  method: string | Array<string>,
 ): Promise<number> => {
   try {
     const result = await db.request().input('method', NVarChar(MAX), method)
@@ -103,7 +102,7 @@ export const functionID = async (
 
     return result.recordsets[0][0].MethodID;
   } catch (error) {
-    throw `functionID ${error}`;
+    throw new Error(`functionID ${error}`);
   }
 };
 
@@ -122,7 +121,7 @@ export const logLevels = async (db: ConnectionPool): Promise<Array<any>> => {
 export const routeID = async (
   db: ConnectionPool,
   route: string,
-  routeMethod: string
+  routeMethod: string,
 ): Promise<number> => {
   try {
     const result = await db
@@ -130,13 +129,13 @@ export const routeID = async (
       .input('route', NVarChar(250), route)
       .input('routeMethod', NVarChar(15), routeMethod).query(`
     IF ((SELECT COUNT(RouteID) FROM dbo.Route WHERE Route = @route AND Method ${
-      routeMethod === undefined ? 'IS NULL' : '= @routeMethod'
-    }) >= 1)
+  routeMethod === undefined ? 'IS NULL' : '= @routeMethod'
+}) >= 1)
       SELECT RouteID 
         FROM dbo.Route 
         WHERE Route = @route AND Method ${
-          routeMethod === undefined ? 'IS NULL' : '= @routeMethod'
-        }
+  routeMethod === undefined ? 'IS NULL' : '= @routeMethod'
+}
     ELSE 
       INSERT INTO dbo.Route(Route, Method)
         OUTPUT INSERTED.RouteID
@@ -145,12 +144,12 @@ export const routeID = async (
 
     return result.recordsets[0][0].RouteID;
   } catch (error) {
-    throw `routeID ${error}`;
+    throw new Error(`routeID ${error}`);
   }
 };
 export const userID = async (
   db: ConnectionPool,
-  user: string
+  user: string,
 ): Promise<number> => {
   try {
     const result = await db.request().input('user', NVarChar(50), user).query(`
@@ -166,6 +165,6 @@ export const userID = async (
 
     return result.recordsets[0][0].UserID;
   } catch (error) {
-    throw `userID ${error}`;
+    throw new Error(`userID ${error}`);
   }
 };

@@ -1,9 +1,8 @@
-import sql, { ConnectionPool, NVarChar, Int } from 'mssql';
-import { WriteErrorProps } from '../types/interfaces';
+import { ConnectionPool, NVarChar, Int } from 'mssql';
 
-export const error = async (
+export const newError = async (
   db: ConnectionPool,
-  props: WriteErrorProps
+  props: WriteErrorProps,
 ): Promise<void> => {
   try {
     await db
@@ -13,7 +12,8 @@ export const error = async (
       .input('userID', Int, props.userID)
       .input('errorID', Int, props.errorID)
       .input('methodID', Int, props.methodID)
-      .input('routeID', Int, props.routeID).query(`
+      .input('routeID', Int, props.routeID)
+      .query(`
     INSERT INTO dbo.Log (ApplicationID, LogLevelID, UserID, ErrorID, MethodID, RouteID)
     VALUES (@applicationID, @logLevelID, @userID, @errorID, @methodID, @routeID);`);
   } catch (error) {
@@ -21,9 +21,9 @@ export const error = async (
   }
 };
 
-export const logLevel = async (
+export const newLogLevel = async (
   db: ConnectionPool,
-  logLevel: string
+  logLevel: string,
 ): Promise<number> => {
   try {
     const result = await db
