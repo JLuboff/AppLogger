@@ -1,10 +1,10 @@
 {
-  "name": "applogger",
+  "name": "@jluboff/applogger",
   "version": "1.0.0",
   "description": "Centralized MS SQL logger for multiple apps",
   "main": "./dist/index.js",
   "scripts": {
-    "prepublishOnly": "rmdir /S /Q dist && tsc",
+    "prepublishOnly": "rmdir /S /Q dist && tsc --skipLibCheck",
     "test": "npm test --watch"
   },
   "repository": {
