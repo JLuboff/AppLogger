@@ -1,4 +1,4 @@
-export interface WriteErrorProps {
+interface WriteErrorProps {
   applicationID: number;
   logLevelID: number;
   userID: number | undefined;
@@ -7,7 +7,7 @@ export interface WriteErrorProps {
   routeID: number | undefined;
 }
 
-export interface ErrorReport {
+interface ErrorReport {
   logID: number;
   application: string;
   logLevel: string;
@@ -19,7 +19,7 @@ export interface ErrorReport {
   routeMethod: string | null;
 }
 
-export interface ConnectSQLProps {
+interface ConnectSQLProps {
   user: string;
   password: string;
   server: string;
