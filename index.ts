@@ -3,15 +3,18 @@ import { initializeDBConnection } from './controllers/connectSQL';
 import {
   WriteErrorProps,
   ConnectSQLProps,
-  ErrorReport
+  ErrorReport,
 } from './types/interfaces';
 import * as insert from './db/insertQueries';
 import * as read from './db/readQueries';
 
 export default class AppLogger {
   private user: string;
+
   private password: string;
+
   private server: string;
+
   private database: string;
 
   constructor(props: ConnectSQLProps) {
@@ -20,6 +23,7 @@ export default class AppLogger {
     this.server = props.server;
     this.database = props.database || 'AppLogger';
   }
+
   // ////////////////////////////////////////
   // Initializes database connection
   // ///////////////////////////////////////
@@ -29,7 +33,7 @@ export default class AppLogger {
         user: this.user,
         password: this.password,
         server: this.server,
-        database: this.database
+        database: this.database,
       };
       const connect = await initializeDBConnection(sqlConfig);
 
@@ -38,6 +42,7 @@ export default class AppLogger {
       throw error;
     }
   };
+
   // ////////////////////////////////////////
   // Opens connection to database, runs query,
   // closes database connection and sends results
@@ -52,6 +57,7 @@ export default class AppLogger {
       throw error;
     }
   };
+
   // ////////////////////////////////////////
   // Used to get errorID, if error
   // exists reads ID else inserts and returns
@@ -59,7 +65,7 @@ export default class AppLogger {
   // ///////////////////////////////////////
   public retrieveErrorID = async (
     message: string,
-    type: string | undefined
+    type: string | undefined,
   ): Promise<number> => {
     try {
       return await this.runQuery(read.errorID, [message, type]);
@@ -67,6 +73,7 @@ export default class AppLogger {
       throw error;
     }
   };
+
   // ////////////////////////////////////////
   // Used to get applicationID, if app name
   // exists reads ID else inserts and returns
@@ -79,6 +86,7 @@ export default class AppLogger {
       throw error;
     }
   };
+
   // ////////////////////////////////////////
   // Used to get routeID, if route name
   // exists reads ID else inserts and returns
@@ -86,7 +94,7 @@ export default class AppLogger {
   // ///////////////////////////////////////
   public retrieveRouteID = async (
     route: string,
-    routeMethod: string
+    routeMethod: string,
   ): Promise<number> => {
     try {
       return await this.runQuery(read.routeID, [route, routeMethod]);
@@ -94,13 +102,14 @@ export default class AppLogger {
       throw error;
     }
   };
+
   // ////////////////////////////////////////
   // Used to get routeID, if app name
   // exists reads ID else inserts and returns
   // the now new function id
   // ///////////////////////////////////////
   public retrieveFunctionID = async (
-    functionName: string | Array<string>
+    functionName: string | Array<string>,
   ): Promise<number> => {
     try {
       return await this.runQuery(read.functionID, [functionName]);
@@ -108,6 +117,7 @@ export default class AppLogger {
       throw error;
     }
   };
+
   // ////////////////////////////////////////
   // Used to get userID, if user
   // exists reads ID else inserts and returns
@@ -120,6 +130,7 @@ export default class AppLogger {
       throw error;
     }
   };
+
   // ////////////////////////////////////////
   // Creates a new log level if it doesn't
   // already exist
@@ -131,6 +142,7 @@ export default class AppLogger {
       throw error;
     }
   };
+
   // ////////////////////////////////////////
   // Retrieves list of Log levels and their
   // ID's
@@ -142,6 +154,7 @@ export default class AppLogger {
       throw error;
     }
   };
+
   // ////////////////////////////////////////
   // Retrieves list of all logs
   // ///////////////////////////////////////
@@ -152,6 +165,7 @@ export default class AppLogger {
       throw error;
     }
   };
+
   // ////////////////////////////////////////
   // Writes a log entry to the database
   // ///////////////////////////////////////
@@ -164,8 +178,8 @@ export default class AppLogger {
           userID: props.userID,
           errorID: props.errorID,
           methodID: props.methodID,
-          routeID: props.routeID
-        }
+          routeID: props.routeID,
+        },
       ]);
     } catch (error) {
       throw error;
