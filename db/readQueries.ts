@@ -1,4 +1,6 @@
 import { ConnectionPool, NVarChar, MAX } from 'mssql';
+// eslint-disable-next-line import/no-cycle
+import { ErrorReport } from '../index';
 
 export const applicationID = async (
   db: ConnectionPool,

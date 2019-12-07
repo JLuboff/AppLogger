@@ -1,6 +1,6 @@
 {
   "name": "@jluboff/applogger",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Centralized MS SQL logger for multiple apps",
   "main": "./dist/index.js",
   "scripts": {

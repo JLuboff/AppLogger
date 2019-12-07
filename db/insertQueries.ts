@@ -1,4 +1,6 @@
 import { ConnectionPool, NVarChar, Int } from 'mssql';
+// eslint-disable-next-line import/no-cycle
+import { WriteErrorProps } from '../index';
 
 export const newError = async (
   db: ConnectionPool,
