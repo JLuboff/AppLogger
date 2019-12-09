@@ -30,6 +30,7 @@ export interface ConnectSQLProps {
   password: string;
   server: string;
   database: string;
+  connectionString: string | undefined;
 }
 
 export default class AppLogger {
@@ -41,11 +42,14 @@ export default class AppLogger {
 
   private database: string;
 
+  private connectionString: string | undefined;
+
   constructor(props: ConnectSQLProps) {
     this.user = props.user;
     this.password = props.password;
     this.server = props.server;
     this.database = props.database || 'AppLogger';
+    this.connectionString = props.connectionString;
   }
 
   // ////////////////////////////////////////
@@ -53,12 +57,20 @@ export default class AppLogger {
   // ///////////////////////////////////////
   private connectToDatabase = async (): Promise<ConnectionPool> => {
     try {
-      const sqlConfig = {
-        user: this.user,
-        password: this.password,
-        server: this.server,
-        database: this.database,
-      };
+      // ////////////////////////////////////////
+      // If connectionString is not undefined or
+      // an empty string, use it. Else, use normal
+      // config object
+      // ///////////////////////////////////////
+      const sqlConfig = this.connectionString !== undefined
+        && this.connectionString.trim() !== ''
+        ? this.connectionString
+        : {
+          user: this.user,
+          password: this.password,
+          server: this.server,
+          database: this.database,
+        };
       const connect = await initializeDBConnection(sqlConfig);
 
       return connect;

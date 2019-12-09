@@ -1,10 +1,10 @@
 import { config, ConnectionPool } from 'mssql';
 
 const initializeDBConnection = async (
-  sqlConfig: config,
+  sqlConfig: config | string,
 ): Promise<ConnectionPool> => {
   try {
-    const pool = new ConnectionPool(sqlConfig);
+    const pool = new ConnectionPool(sqlConfig as any);
     await pool.connect();
     return pool;
   } catch (err) {
