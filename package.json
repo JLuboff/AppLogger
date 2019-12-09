@@ -1,8 +1,9 @@
 {
   "name": "@jluboff/applogger",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Centralized MS SQL logger for multiple apps",
-  "main": "./dist/index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "prepublishOnly": "rmdir /S /Q dist && tsc",
     "test": "npm test --watch"
@@ -37,5 +38,9 @@
     "eslint-plugin-import": "^2.18.2",
     "jest": "^24.9.0",
     "typescript": "^3.7.3"
-  }
+  },
+  "files": [
+    "dist/index.js",
+    "dist/index.d.ts"
+  ]
 }
