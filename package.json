@@ -1,6 +1,6 @@
 {
   "name": "@jluboff/applogger",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Centralized MS SQL logger for multiple apps",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -44,7 +44,7 @@
     "dist/index.d.ts",
     "dist/db/insertQueries.js",
     "dist/db/insertQueries.d.ts",
-    "dist/db/readQeries.js",
+    "dist/db/readQueries.js",
     "dist/db/readQueries.d.ts",
     "dist/controllers/connectSQL.js",
     "dist/controllers/connectSQL.d.ts"
