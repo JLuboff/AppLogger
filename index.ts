@@ -1,5 +1,6 @@
+/* eslint-disable import/no-cycle */
 import { ConnectionPool } from 'mssql';
-import { initializeDBConnection } from './controllers/connectSQL';
+import initializeDBConnection from './controllers/connectSQL';
 import * as insert from './db/insertQueries';
 import * as read from './db/readQueries';
 
