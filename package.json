@@ -1,10 +1,10 @@
 {
   "name": "@jluboff/applogger",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Centralized MS SQL logger for multiple apps",
   "main": "./dist/index.js",
   "scripts": {
-    "prepublishOnly": "rmdir /S /Q dist && tsc --skipLibCheck",
+    "prepublishOnly": "rmdir /S /Q dist && tsc",
     "test": "npm test --watch"
   },
   "repository": {
@@ -22,13 +22,14 @@
   },
   "homepage": "https://github.com/JLuboff/AppLogger#readme",
   "dependencies": {
-    "@types/mssql": "^6.0.0",
-    "@types/nodemailer": "^6.2.2",
     "mssql": "^6.0.1",
     "nodemailer": "^6.4.0"
   },
   "devDependencies": {
     "@types/jest": "^24.0.23",
+    "@types/mssql": "^6.0.0",
+    "@types/node": "^12.12.15",
+    "@types/nodemailer": "^6.2.2",
     "@typescript-eslint/eslint-plugin": "^2.10.0",
     "@typescript-eslint/parser": "^2.10.0",
     "eslint": "^6.7.2",
