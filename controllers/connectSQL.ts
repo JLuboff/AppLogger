@@ -1,7 +1,7 @@
 import { config, ConnectionPool } from 'mssql';
 
-export const initializeDBConnection = async (
-  sqlConfig: config
+const initializeDBConnection = async (
+  sqlConfig: config,
 ): Promise<ConnectionPool> => {
   try {
     const pool = new ConnectionPool(sqlConfig);
@@ -14,3 +14,5 @@ export const initializeDBConnection = async (
     throw err;
   }
 };
+
+export default initializeDBConnection;
