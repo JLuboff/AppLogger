@@ -1,7 +1,15 @@
 import { ConnectionPool, NVarChar, Int } from 'mssql';
 // eslint-disable-next-line import/no-cycle
 import { WriteErrorProps } from '../index';
-
+/**
+ * Inserts a new entry into the log
+ * @param db
+ * ConnectionPool
+ * @param props
+ * WriteErrorProps
+ * @returns
+ * void
+ */
 export const newError = async (
   db: ConnectionPool,
   props: WriteErrorProps,
@@ -22,7 +30,15 @@ export const newError = async (
     throw error;
   }
 };
-
+/**
+ * Create a custom loglevel.
+ * @param db
+ * ConnectionPool
+ * @param logLevel
+ * string
+ * @returns
+ * number (new loglevelid)
+ */
 export const newLogLevel = async (
   db: ConnectionPool,
   logLevel: string,

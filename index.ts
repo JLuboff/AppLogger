@@ -53,7 +53,9 @@ export default class AppLogger {
   }
 
   // ////////////////////////////////////////
-  // Initializes database connection
+  /**
+   * Initializes database connection
+   */
   // ///////////////////////////////////////
   private connectToDatabase = async (): Promise<ConnectionPool> => {
     try {
@@ -80,8 +82,10 @@ export default class AppLogger {
   };
 
   // ////////////////////////////////////////
-  // Opens connection to database, runs query,
-  // closes database connection and sends results
+  /**
+   * Opens connection to database, runs query,
+   * closes database connection and sends results.
+   */
   // ///////////////////////////////////////
   private runQuery = async (cb: any, args: Array<any> | null): Promise<any> => {
     try {
@@ -95,9 +99,11 @@ export default class AppLogger {
   };
 
   // ////////////////////////////////////////
-  // Used to get errorID, if error
-  // exists reads ID else inserts and returns
-  // the now new error id
+  /**
+   *  Used to get errorID, if error
+   *  exists reads ID else inserts and returns
+   * the now new error id.
+   */
   // ///////////////////////////////////////
   public retrieveErrorID = async (
     message: string,
@@ -111,9 +117,11 @@ export default class AppLogger {
   };
 
   // ////////////////////////////////////////
-  // Used to get applicationID, if app name
-  // exists reads ID else inserts and returns
-  // the now new app id
+  /**
+   * Used to get applicationID, if app name
+   * exists reads ID else inserts and returns
+   * the now new app id.
+   */
   // ///////////////////////////////////////
   public retrieveApplicationID = async (appName: string): Promise<number> => {
     try {
@@ -124,9 +132,11 @@ export default class AppLogger {
   };
 
   // ////////////////////////////////////////
-  // Used to get routeID, if route name
-  // exists reads ID else inserts and returns
-  // the now new route id
+  /**
+   * Used to get routeID, if route name
+   * exists reads ID else inserts and returns
+   * the now new route id.
+   */
   // ///////////////////////////////////////
   public retrieveRouteID = async (
     route: string,
@@ -140,9 +150,11 @@ export default class AppLogger {
   };
 
   // ////////////////////////////////////////
-  // Used to get routeID, if app name
-  // exists reads ID else inserts and returns
-  // the now new function id
+  /**
+   * Used to get routeID, if app name
+   * exists reads ID else inserts and returns
+   * the now new function id.
+   */
   // ///////////////////////////////////////
   public retrieveFunctionID = async (
     functionName: string | Array<string>,
@@ -155,9 +167,11 @@ export default class AppLogger {
   };
 
   // ////////////////////////////////////////
-  // Used to get userID, if user
-  // exists reads ID else inserts and returns
-  // the now new user id
+  /**
+   * Used to get userID, if user
+   * exists reads ID else inserts and returns
+   * the now new user id.
+   */
   // ///////////////////////////////////////
   public retrieveUserID = async (user: string): Promise<number> => {
     try {
@@ -168,8 +182,10 @@ export default class AppLogger {
   };
 
   // ////////////////////////////////////////
-  // Creates a new log level if it doesn't
-  // already exist
+  /**
+   * Creates a new log level if it doesn't
+   * already exist.
+   */
   // ///////////////////////////////////////
   public addLogLevel = async (logLevel: string): Promise<number> => {
     try {
@@ -180,8 +196,9 @@ export default class AppLogger {
   };
 
   // ////////////////////////////////////////
-  // Retrieves list of Log levels and their
-  // ID's
+  /**
+   * Retrieves list of Log levels and their ID's.
+   */
   // ///////////////////////////////////////
   public retrieveLogLevel = async () => {
     try {
@@ -192,7 +209,9 @@ export default class AppLogger {
   };
 
   // ////////////////////////////////////////
-  // Retrieves list of all logs
+  /**
+   * Retrieves list of all logs.
+   */
   // ///////////////////////////////////////
   public retrieveErrorLog = async (): Promise<Array<ErrorReport>> => {
     try {
@@ -203,7 +222,9 @@ export default class AppLogger {
   };
 
   // ////////////////////////////////////////
-  // Writes a log entry to the database
+  /**
+   * Writes a log entry to the database.
+   */
   // ///////////////////////////////////////
   public writeError = async (props: WriteErrorProps): Promise<void> => {
     try {
