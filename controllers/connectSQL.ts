@@ -1,5 +1,11 @@
 import { config, ConnectionPool } from 'mssql';
-
+/**
+ * Establishes database connection.
+ * @param sqlConfig
+ * config | string
+ * @returns
+ * ConnectionPool
+ */
 const initializeDBConnection = async (
   sqlConfig: config | string,
 ): Promise<ConnectionPool> => {
