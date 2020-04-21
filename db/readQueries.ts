@@ -1,4 +1,6 @@
-import { ConnectionPool, NVarChar, MAX } from 'mssql';
+import {
+  ConnectionPool, NVarChar, MAX, Int,
+} from 'mssql';
 // eslint-disable-next-line import/no-cycle
 import { ErrorReport } from '../index';
 /**
@@ -29,6 +31,30 @@ export const applicationID = async (
     `);
 
     return result.recordsets[0][0].ApplicationID;
+  } catch (error) {
+    throw error;
+  }
+};
+/**
+ * Retrieves the application name based on the application id
+ * @param db
+ * ConnectPool
+ * @param appID
+ * number
+ * @returns
+ * string
+ */
+export const applicationName = async (
+  db: ConnectionPool,
+  appID: number,
+): Promise<string> => {
+  try {
+    const result = await db.request().input('applicationID', Int, appID).query(`
+    SELECT Application
+    FROM dbo.Application
+    WHERE ApplicationID = @applicationID`);
+
+    return result.recordsets[0][0].Application;
   } catch (error) {
     throw error;
   }
@@ -79,12 +105,18 @@ export const errorID = async (
  * Retrieves the current error log entries.
  * @param db
  * ConnectionPool
+ * @param searchErrorID
+ * number
  * @returns
  * ErrorReport[]
  */
-export const errors = async (db: ConnectionPool): Promise<ErrorReport[]> => {
+export const errors = async (
+  db: ConnectionPool,
+  searchErrorID?: number,
+): Promise<ErrorReport[]> => {
   try {
-    const result = await db.request().query(`
+    const result = await db.request().input('errorID', Int, searchErrorID)
+      .query(`
             SELECT l.LogID AS logID, a.Application AS application, ll.LogLevel AS logLevel,
              e.ErrorMessage AS errorMessage, e.ErrorType AS errorType, u.[User] AS 'user', 
              m.Method AS 'function', r.Route AS route, r.Method AS routeMethod, 
@@ -101,7 +133,9 @@ export const errors = async (db: ConnectionPool): Promise<ErrorReport[]> => {
               LEFT JOIN dbo.Method AS m
                 ON l.MethodID = m.MethodID
               LEFT JOIN dbo.Route AS r 
-                ON l.RouteID = r.RouteID`);
+                ON l.RouteID = r.RouteID
+            ${searchErrorID ? 'WHERE e.ErrorID = @errorID' : ''}
+            ORDER BY l.LogID DESC`);
 
     return result.recordsets[0];
   } catch (error) {
@@ -144,6 +178,8 @@ export const functionID = async (
  * Retrieves all current existing log levels.
  * @param db
  * ConnectionPool
+ * @param logLevelID
+ * number
  * @returns
  * {logLevelID: number; logLevel: string}[]
  */
