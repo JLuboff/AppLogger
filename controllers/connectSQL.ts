@@ -13,11 +13,12 @@ const initializeDBConnection = async (
     const pool = new ConnectionPool(sqlConfig as any);
     await pool.connect();
     return pool;
-  } catch (err) {
-    err.function = err.function
-      ? ['connectSQL.initializeDBConnection()', ...err.function]
-      : ['connectSQL.initializeDBConnection()'];
-    throw err;
+  } catch (error) {
+    error.function = [
+      'connectSQL.initializeDBConnection()',
+      ...(error?.function ?? []),
+    ];
+    throw error;
   }
 };
 
