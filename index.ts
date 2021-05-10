@@ -52,6 +52,7 @@ export interface ConnectSQLProps {
   enableEmailing: boolean;
   smtpHostSettings?: SMTPHostSettings;
   emailSettings?: EmailSettings[];
+  port?: number;
 }
 
 export default class AppLogger {
@@ -71,6 +72,8 @@ export default class AppLogger {
 
   private emailSettings?: EmailSettings[];
 
+  private port: number;
+
   constructor(props: ConnectSQLProps) {
     this.user = props.user;
     this.password = props.password;
@@ -80,6 +83,7 @@ export default class AppLogger {
     this.enableEmailing = props.enableEmailing || false;
     this.smtpHostSettings = props.smtpHostSettings;
     this.emailSettings = props.emailSettings;
+    this.port = props?.port ?? 1433;
   }
 
   // ////////////////////////////////////////
@@ -104,6 +108,7 @@ export default class AppLogger {
           server: this.server,
           database: this.database,
           options: {
+            port: this.port,
             enableArithAbort: true,
           },
         } as config);
