@@ -109,6 +109,7 @@ export default class AppLogger {
           database: this.database,
           options: {
             enableArithAbort: true,
+            trustServerCertificate: true,
           },
         } as config);
       const connect = await initializeDBConnection(sqlConfig);
