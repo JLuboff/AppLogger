@@ -1,6 +1,7 @@
 import { config, ConnectionPool } from 'mssql';
 /**
  * Establishes database connection.
+ * @async
  * @param sqlConfig
  * config | string
  * @returns

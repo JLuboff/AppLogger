@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import { ConnectionPool } from 'mssql';
+import { ConnectionPool, config } from 'mssql';
 import nodeMailer, { SendMailOptions } from 'nodemailer';
 import initializeDBConnection from './controllers/connectSQL';
 import * as insert from './db/insertQueries';
@@ -85,24 +85,28 @@ export default class AppLogger {
   // ////////////////////////////////////////
   /**
    * Initializes database connection
+   * @async
+   * @returns
+   * ConnectionPool
    */
   // ///////////////////////////////////////
   private connectToDatabase = async (): Promise<ConnectionPool> => {
     try {
-      // ////////////////////////////////////////
-      // If connectionString is not undefined or
-      // an empty string, use it. Else, use normal
-      // config object
-      // ///////////////////////////////////////
-      const sqlConfig = this.connectionString !== undefined
-        && this.connectionString.trim() !== ''
-        ? this.connectionString
-        : {
+      /**
+       * If connectionString is not undefined or an empty string, use it.
+       * Else,use config object
+       */
+      const sqlConfig = this.connectionString?.trim() !== ''
+        ? (this.connectionString as string)
+        : ({
           user: this.user,
           password: this.password,
           server: this.server,
           database: this.database,
-        };
+          options: {
+            enableArithAbort: true,
+          },
+        } as config);
       const connect = await initializeDBConnection(sqlConfig);
 
       return connect;
@@ -113,11 +117,12 @@ export default class AppLogger {
 
   // ////////////////////////////////////////
   /**
-   * Initializes connection to SMTP Server
-   * and sends email
+   * Initializes connection to SMTP Server and sends email
+   * @async
+   * @param message SendMailOptions
    */
   // ///////////////////////////////////////
-  private sendMail = async (message: SendMailOptions) => {
+  private sendMail = async (message: SendMailOptions): Promise<void> => {
     try {
       /**
        * Establishes mail transporter
@@ -138,13 +143,15 @@ export default class AppLogger {
   };
 
   /**
-   * Creates the main email message for
-   * sending error information
+   * Creates the main email message for sending error information
+   * @async
+   * @param errorID number
+   * @param emailParameters EmailSettings
    */
   private createMailMessage = async (
     errorID: number,
     emailParameters: EmailSettings,
-  ) => {
+  ): Promise<void> => {
     try {
       const getErrorResult: ErrorReport[] = await this.runQuery(read.errors, [
         errorID,
@@ -183,7 +190,8 @@ export default class AppLogger {
                           ${application}
                         </td>
                       </tr>
-                      ${errorType
+                      ${
+  errorType
                         && `<tr>
                         <td>
                           <strong>Error Type</strong>
@@ -191,7 +199,8 @@ export default class AppLogger {
                         <td>
                           ${errorType}
                         </td>
-                      </tr>`}
+                      </tr>`
+}
                       <tr>
                         <td>
                           <strong>Error Message</strong>
@@ -200,7 +209,8 @@ export default class AppLogger {
                           ${errorMessage}
                         </td>
                       </tr>
-                      ${user
+                      ${
+  user
                         && `<tr>
                         <td>
                           <strong>User</strong>
@@ -208,8 +218,10 @@ export default class AppLogger {
                         <td>
                           ${user}
                         </td>
-                      </tr>`}
-                      ${method
+                      </tr>`
+}
+                      ${
+  method
                         && `<tr>
                         <td>
                           <strong>Function</strong>
@@ -217,8 +229,10 @@ export default class AppLogger {
                         <td>
                           ${method}
                         </td>
-                      </tr>`}
-                      ${route
+                      </tr>`
+}
+                      ${
+  route
                         && `<tr>
                         <td>
                           <strong>Route</strong>
@@ -226,7 +240,8 @@ export default class AppLogger {
                         <td>
                           ${routeMethod}: ${route}
                         </td>
-                      </tr>`}
+                      </tr>`
+}
                     </tbody>
                   </table>
                   `,
@@ -241,9 +256,12 @@ export default class AppLogger {
   /**
    * Opens connection to database, runs query,
    * closes database connection and sends results.
+   * @async
+   * @param cb any
+   * @param args any[] | null
    */
   // ///////////////////////////////////////
-  private runQuery = async (cb: any, args: Array<any> | null): Promise<any> => {
+  private runQuery = async (cb: any, args: any[] | null): Promise<any> => {
     try {
       const db = await this.connectToDatabase();
       const result = args === null ? await cb(db) : await cb(db, ...args);
@@ -256,9 +274,12 @@ export default class AppLogger {
 
   // ////////////////////////////////////////
   /**
-   *  Used to get errorID, if error
-   *  exists reads ID else inserts and returns
-   * the now new error id.
+   *  Used to get errorID, if error exists reads ID
+   * else inserts and returns the now new error id.
+   * @async
+   * @param message string
+   * @param type string | undefined
+   * @returns number
    */
   // ///////////////////////////////////////
   public retrieveErrorID = async (
@@ -274,9 +295,11 @@ export default class AppLogger {
 
   // ////////////////////////////////////////
   /**
-   * Used to get applicationID, if app name
-   * exists reads ID else inserts and returns
-   * the now new app id.
+   * Used to get applicationID, if app name exists reads ID
+   * else inserts and returns the now new app id.
+   * @async
+   * @param appName string
+   * @returns number
    */
   // ///////////////////////////////////////
   public retrieveApplicationID = async (appName: string): Promise<number> => {
@@ -289,9 +312,12 @@ export default class AppLogger {
 
   // ////////////////////////////////////////
   /**
-   * Used to get routeID, if route name
-   * exists reads ID else inserts and returns
-   * the now new route id.
+   * Used to get routeID, if route name exists reads ID
+   * else inserts and returns the now new route id.
+   * @async
+   * @param route string
+   * @param routeMethod string
+   * @returns number
    */
   // ///////////////////////////////////////
   public retrieveRouteID = async (
@@ -307,13 +333,15 @@ export default class AppLogger {
 
   // ////////////////////////////////////////
   /**
-   * Used to get routeID, if app name
-   * exists reads ID else inserts and returns
-   * the now new function id.
+   * Used to get routeID, if app name exists reads ID
+   * else inserts and returns the now new function id.
+   * @async
+   * @param functionName string | string[]
+   * @returns number
    */
   // ///////////////////////////////////////
   public retrieveFunctionID = async (
-    functionName: string | Array<string>,
+    functionName: string | string[],
   ): Promise<number> => {
     try {
       return await this.runQuery(read.functionID, [functionName]);
@@ -324,9 +352,11 @@ export default class AppLogger {
 
   // ////////////////////////////////////////
   /**
-   * Used to get userID, if user
-   * exists reads ID else inserts and returns
-   * the now new user id.
+   * Used to get userID, if user exists reads ID
+   * else inserts and returns the now new user id.
+   * @async
+   * @param user string
+   * @returns number
    */
   // ///////////////////////////////////////
   public retrieveUserID = async (user: string): Promise<number> => {
@@ -339,8 +369,10 @@ export default class AppLogger {
 
   // ////////////////////////////////////////
   /**
-   * Creates a new log level if it doesn't
-   * already exist.
+   * Creates a new log level if it doesn't already exist.
+   * @async
+   * @param logLevel string
+   * @returns number
    */
   // ///////////////////////////////////////
   public addLogLevel = async (logLevel: string): Promise<number> => {
@@ -354,6 +386,8 @@ export default class AppLogger {
   // ////////////////////////////////////////
   /**
    * Retrieves list of Log levels and their ID's.
+   * @async
+   * @returns any
    */
   // ///////////////////////////////////////
   public retrieveLogLevel = async () => {
@@ -367,9 +401,11 @@ export default class AppLogger {
   // ////////////////////////////////////////
   /**
    * Retrieves list of all logs.
+   * @async
+   * @returns ErrorReport[]
    */
   // ///////////////////////////////////////
-  public retrieveErrorLog = async (): Promise<Array<ErrorReport>> => {
+  public retrieveErrorLog = async (): Promise<ErrorReport[]> => {
     try {
       return await this.runQuery(read.errors, null);
     } catch (error) {
@@ -380,6 +416,8 @@ export default class AppLogger {
   // ////////////////////////////////////////
   /**
    * Writes a log entry to the database.
+   * @async
+   * @param props WriteErrorProps
    */
   // ///////////////////////////////////////
   public writeError = async (props: WriteErrorProps): Promise<void> => {
@@ -396,7 +434,7 @@ export default class AppLogger {
       ]);
 
       const logLevelForEmail = this.emailSettings?.filter(
-        ({ logLevelID }) => logLevelID === props.logLevelID
+        ({ logLevelID }) => logLevelID === props.logLevelID,
       );
       if (this.enableEmailing && logLevelForEmail && logLevelForEmail.length) {
         this.createMailMessage(props.errorID as number, logLevelForEmail[0]);
