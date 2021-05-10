@@ -107,6 +107,7 @@ export default class AppLogger {
           password: this.password,
           server: this.server,
           database: this.database,
+          port: this.port,
           options: {
             port: this.port,
             enableArithAbort: true,
