@@ -100,16 +100,14 @@ export default class AppLogger {
        * If connectionString is not undefined or an empty string, use it.
        * Else,use config object
        */
-      const sqlConfig = this.connectionString?.trim() !== ''
-        ? (this.connectionString as string)
+      const sqlConfig = this.connectionString !== undefined && this.connectionString.trim() !== ''
+        ? this.connectionString
         : ({
           user: this.user,
           password: this.password,
           server: this.server,
           database: this.database,
-          port: this.port,
           options: {
-            port: this.port,
             enableArithAbort: true,
           },
         } as config);
